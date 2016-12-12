@@ -27,7 +27,8 @@
     "doctrine/orm": ">=2.5",
     "fei/logger-common": "^1.1.11"
   },
-  "autoload": {
+    "minimum-stability": "dev",
+    "autoload": {
     "psr-4": {
       "Fei\\Service\\Audit\\": "src"
     }
