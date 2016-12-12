@@ -22,6 +22,7 @@
     "require-dev": {
         "codeception/codeception": "^2.2"
     },
+    "minimum-stability" : "dev",
   "require": {
     "league/fractal": "^0.14.0",
     "doctrine/orm": ">=2.5",
