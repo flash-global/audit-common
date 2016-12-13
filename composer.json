@@ -1,5 +1,5 @@
 {
-  "name": "flash-global/audit-common",
+  "name": "fei/audit-common",
   "description": "Flash applicative audit - common components",
   "type": "library",
   "keywords": [
@@ -19,16 +19,15 @@
       "url": "https://composer.flash-global.net"
     }
   ],
-    "require-dev": {
-        "codeception/codeception": "^2.2"
-    },
-    "minimum-stability" : "dev",
   "require": {
     "league/fractal": "^0.14.0",
-    "doctrine/orm": ">=2.5",
-    "fei/logger-common": "^1.1.11"
+    "fei/entities": "^1.0.3",
+    "doctrine/orm": ">=2.5"
   },
-    "autoload": {
+  "require-dev": {
+    "codeception/codeception": "^2.2"
+  },
+  "autoload": {
     "psr-4": {
       "Fei\\Service\\Audit\\": "src"
     }
