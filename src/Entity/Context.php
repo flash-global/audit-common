@@ -19,10 +19,10 @@
         protected $id;
 
         /**
-         * @ManyToOne(targetEntity="Notification", inversedBy="contexts")
-         * @JoinColumn(name="notification_id", referencedColumnName="id", onDelete="CASCADE")
+         * @ManyToOne(targetEntity="AuditEvent", inversedBy="contexts")
+         * @JoinColumn(name="auditEvent_id", referencedColumnName="id", onDelete="CASCADE")
          */
-        protected $notification;
+        protected $auditEvent;
 
         /**
          * @Column(type="string", name="`key`")
@@ -59,19 +59,19 @@
         /**
          * @return mixed
          */
-        public function getNotification()
+        public function getAuditEvent()
         {
-            return $this->notification;
+            return $this->auditEvent;
         }
 
         /**
-         * @param mixed $notification
+         * @param mixed $auditEvent
          *
          * @return Context
          */
-        public function setNotification($notification)
+        public function setAuditEvent($auditEvent)
         {
-            $this->notification = $notification;
+            $this->auditEvent = $auditEvent;
 
             return $this;
         }

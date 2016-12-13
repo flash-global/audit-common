@@ -5,16 +5,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Fei\Entity\AbstractEntity;
 
 /**
- * Class NotificationEndpoint
+ * Class AuditEventEndpoint
  *
  * @Entity
- * @Table(name="notifications", indexes={
- *     @Index(name="idx_notification_levels", columns={"level"}),
- *     @Index(name="idx_notification_servers", columns={"server"}),
- *     @Index(name="idx_notification_envs", columns={"env"})
+ * @Table(name="audit_events", indexes={
+ *     @Index(name="idx_auditEvent_levels", columns={"level"}),
+ *     @Index(name="idx_auditEvent_servers", columns={"server"}),
+ *     @Index(name="idx_auditEvent_envs", columns={"env"})
  * })
  */
-class Notification extends AbstractEntity
+class AuditEvent extends AbstractEntity
 {
     // category
     const SECURITY    = 1;
@@ -117,7 +117,7 @@ class Notification extends AbstractEntity
     protected $env = 'n/c';
 
     /**
-     * @OneToMany(targetEntity="Context", mappedBy="notification", cascade={"all"})
+     * @OneToMany(targetEntity="Context", mappedBy="auditEvent", cascade={"all"})
      */
     protected $contexts;
 
@@ -142,7 +142,7 @@ class Notification extends AbstractEntity
     /**
      * @param mixed $id
      *
-     * @return Notification
+     * @return AuditEvent
      */
     public function setId($id)
     {
@@ -162,7 +162,7 @@ class Notification extends AbstractEntity
     /**
      * @param mixed $reportedAt
      *
-     * @return Notification
+     * @return AuditEvent
      */
     public function setReportedAt($reportedAt)
     {
@@ -186,7 +186,7 @@ class Notification extends AbstractEntity
     /**
      * @param mixed $level
      *
-     * @return Notification
+     * @return AuditEvent
      */
     public function setLevel($level)
     {
@@ -216,7 +216,7 @@ class Notification extends AbstractEntity
     /**
      * @param mixed $flags
      *
-     * @return Notification
+     * @return AuditEvent
      */
     public function setFlags($flags)
     {
@@ -236,7 +236,7 @@ class Notification extends AbstractEntity
     /**
      * @param mixed $namespace
      *
-     * @return Notification
+     * @return AuditEvent
      */
     public function setNamespace($namespace)
     {
@@ -264,7 +264,7 @@ class Notification extends AbstractEntity
     /**
      * @param mixed $message
      *
-     * @return Notification
+     * @return AuditEvent
      */
     public function setMessage($message)
     {
@@ -472,7 +472,7 @@ class Notification extends AbstractEntity
                     $value = new Context($contextData);
                 }
 
-                $value->setNotification($this);
+                $value->setAuditEvent($this);
                 $this->contexts->add($value);
             }
         }

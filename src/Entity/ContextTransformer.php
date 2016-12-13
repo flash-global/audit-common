@@ -3,9 +3,18 @@
     namespace Fei\Service\Audit\Entity;
 
 
-    use Fei\Service\Logger\Entity\ContextTransformer as LoggerContextTransformer;
+    use League\Fractal\TransformerAbstract;
 
-    class ContextTransformer extends LoggerContextTransformer
+    class ContextTransformer extends TransformerAbstract
     {
 
+        public function transform(Context $context)
+        {
+
+            return array(
+                'id'  => (int) $context->getId(),
+                'key' => $context->getKey(),
+                'value' => $context->getValue()
+            );
+        }
     }
