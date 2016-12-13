@@ -2,9 +2,9 @@
 
 namespace Tests\Fei\Service\Audit\Entity;
 
-use Tests\Fei\Service\Logger\Entity\NotificationTest as LoggerNotificationTest;
+use Codeception\Test\Unit;
 
-class NotificationTest extends LoggerNotificationTest
+class NotificationTest extends Unit
 {
 
 }
