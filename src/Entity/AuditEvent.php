@@ -1,21 +1,20 @@
 <?php
 namespace Fei\Service\Audit\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Fei\Entity\AbstractEntity;
+use Fei\Entities\ContextAwareEntityInterface;
+use Fei\Entities\ContextAwareTrait;
+use ObjectivePHP\Gateway\Entity\Entity;
+use ObjectivePHP\Primitives\String\Snake;
 
 /**
- * Class AuditEventEndpoint
+ * Class AuditEvent
  *
- * @Entity
- * @Table(name="audit_events", indexes={
- *     @Index(name="idx_auditEvent_levels", columns={"level"}),
- *     @Index(name="idx_auditEvent_servers", columns={"server"}),
- *     @Index(name="idx_auditEvent_envs", columns={"env"})
- * })
+ * @package Fei\Service\Audit\Entity
  */
-class AuditEvent extends AbstractEntity
+class AuditEvent extends Entity implements ContextAwareEntityInterface
 {
+    use ContextAwareTrait;
+
     // category
     const SECURITY    = 1;
     const PERFORMANCE = 2;
@@ -32,9 +31,15 @@ class AuditEvent extends AbstractEntity
     const LVL_ERROR   = 8;
     const LVL_PANIC   = 16;
 
-    protected $levelLabels = [1 => 'Debug', 2 => 'Info', 4 => 'Warning', 8 => 'Error', 16 => 'Panic'];
+    protected static $levelLabels = [
+        self::LVL_DEBUG => 'Debug',
+        self::LVL_INFO => 'Info',
+        self::LVL_WARNING => 'Warning',
+        self::LVL_ERROR => 'Error',
+        self::LVL_PANIC => 'Panic'
+    ];
 
-    protected $categoryLabels = [
+    protected static $categoryLabels = [
         self::SECURITY    => 'Security',
         self::PERFORMANCE => 'Performance',
         self::BUSINESS    => 'Business',
@@ -44,95 +49,88 @@ class AuditEvent extends AbstractEntity
         self::TRACKING    => 'Tracking'
     ];
 
+    protected $entityCollection = "audit_events";
+
     /**
-     * @Id
-     * @GeneratedValue(strategy="AUTO")
-     * @Column(type="integer")
+     * @var int
      */
     protected $id;
 
     /**
-     * @Column(type="datetime")
-     *
+     * @var \DateTime
      */
     protected $reportedAt;
 
     /**
-     * @Column(type="integer")
+     * @var int
      */
     protected $level = 2;
 
     /**
-     * @Column(type="integer")
+     * @var int
      */
-    protected $flags = 0;
+    //protected $flags = 0;
 
     /**
-     * @Column(type="string")
+     * @var string
      */
     protected $namespace = '/';
 
     /**
-     * @Column(type="string")
+     * @var string
      */
     protected $message;
 
     /**
-     * @Column(type="json_array", nullable=true)
+     * @var json
      */
     protected $backTrace;
 
     /**
-     * @Column(type="string", name="user", nullable=true)
+     * @var string
      */
     protected $user;
 
     /**
-     * @Column(type="string", nullable=true)
+     * @var string
      */
     protected $server;
 
     /**
-     * @Column(type="text", nullable=true)
+     * @var string
      *
      * This represents URL+QUERY STRING for HTTP environment and command line for CLI
      */
     protected $command;
 
     /**
-     * @Column(type="string")
+     * @var string
      */
     protected $origin;
 
     /**
-     * @Column(type="integer", nullable=true)
+     * @var int
      */
     protected $category;
 
     /**
      * Environment of the originating application
      *
-     * @Column(type="string")
+     * @var string
      */
     protected $env = 'n/c';
 
-    /**
-     * @OneToMany(targetEntity="Context", mappedBy="auditEvent", cascade={"all"})
-     */
-    protected $contexts;
 
     /**
-     * Notification constructor.
+     * Audit constructor.
      */
     public function __construct($data = null)
     {
-        $this->contexts = new ArrayCollection();
-
-        parent::__construct($data);
+        //parent::__construct($data);
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getId()
     {
@@ -140,11 +138,11 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @param mixed $id
+     * @param int $id
      *
      * @return AuditEvent
      */
-    public function setId($id)
+    public function setId(int $id) : AuditEvent
     {
         $this->id = $id;
 
@@ -154,17 +152,17 @@ class AuditEvent extends AbstractEntity
     /**
      * @return \DateTime
      */
-    public function getReportedAt()
+    public function getReportedAt() : \DateTime
     {
         return $this->reportedAt;
     }
 
     /**
-     * @param mixed $reportedAt
+     * @param $reportedAt
      *
      * @return AuditEvent
      */
-    public function setReportedAt($reportedAt)
+    public function setReportedAt($reportedAt) : AuditEvent
     {
         if (is_string($reportedAt)) {
             $reportedAt = new \DateTime($reportedAt);
@@ -176,7 +174,7 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getLevel()
     {
@@ -184,21 +182,24 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @param mixed $level
+     * @param int $level
      *
      * @return AuditEvent
      */
-    public function setLevel($level)
+    public function setLevel($level) : AuditEvent
     {
         $this->level = $level;
 
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getLevelLabel()
     {
         $labels = [];
-        foreach ($this->levelLabels as $level => $label) {
+        foreach (static::$levelLabels as $level => $label) {
             if ($level & $this->level) $labels[] = $label;
         }
 
@@ -206,27 +207,15 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getFlags()
+    public static function getLevelLabels() : array
     {
-        return $this->flags;
+        return static::$levelLabels;
     }
 
     /**
-     * @param mixed $flags
-     *
-     * @return AuditEvent
-     */
-    public function setFlags($flags)
-    {
-        $this->flags = $flags;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
+     * @return string
      */
     public function getNamespace()
     {
@@ -234,16 +223,16 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @param mixed $namespace
+     * @param string $namespace
      *
      * @return AuditEvent
      */
-    public function setNamespace($namespace)
+    public function setNamespace($namespace) : AuditEvent
     {
         $parts = explode('/', $namespace);
 
         foreach ($parts as &$part) {
-            $part = $this->toSnakeCase($part, '-');
+            $part = Snake::case($part, '-');
         }
 
         $namespace = implode('/', $parts);
@@ -256,17 +245,35 @@ class AuditEvent extends AbstractEntity
     /**
      * @return mixed
      */
+    /*public function getFlags()
+    {
+        return $this->flags;
+    }*/
+
+    /**
+     * @param int $flags
+     * @return $this
+     */
+    /*public function setFlags($flags)
+    {
+        $this->flags = $flags;
+        return $this;
+    }*/
+
+    /**
+     * @return string
+     */
     public function getMessage()
     {
         return $this->message;
     }
 
     /**
-     * @param mixed $message
+     * @param string $message
      *
      * @return AuditEvent
      */
-    public function setMessage($message)
+    public function setMessage($message) : AuditEvent
     {
         $this->message = $message;
 
@@ -274,7 +281,7 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @return mixed
+     * @return json
      */
     public function getBackTrace()
     {
@@ -284,11 +291,11 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @param mixed $backTrace
+     * @param $backTrace
      *
-     * @return $this
+     * @return AuditEvent
      */
-    public function setBackTrace($backTrace)
+    public function setBackTrace($backTrace) : AuditEvent
     {
         $this->backTrace = $backTrace;
 
@@ -296,7 +303,7 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getUser()
     {
@@ -304,11 +311,11 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @param mixed $user
+     * @param string $user
      *
-     * @return $this
+     * @return AuditEvent
      */
-    public function setUser($user)
+    public function setUser($user) : AuditEvent
     {
         $this->user = $user;
 
@@ -316,7 +323,7 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getServer()
     {
@@ -324,11 +331,11 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @param mixed $server
+     * @param string $server
      *
-     * @return $this
+     * @return AuditEvent
      */
-    public function setServer($server)
+    public function setServer($server) : AuditEvent
     {
         $this->server = $server;
 
@@ -336,7 +343,7 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getCommand()
     {
@@ -344,11 +351,11 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @param mixed $command
+     * @param string $command
      *
-     * @return $this
+     * @return AuditEvent
      */
-    public function setCommand($command)
+    public function setCommand($command) : AuditEvent
     {
         $this->command = $command;
 
@@ -358,25 +365,25 @@ class AuditEvent extends AbstractEntity
     /**
      * Return the appropriate label to describe the command depending on log origin
      */
-    public function getCommandLabel()
+    public function getCommandLabel() : string
     {
         return $this->origin == 'http' ? 'url' : 'command line';
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getOrigin()
+    public function getOrigin() : string
     {
         return $this->origin;
     }
 
     /**
-     * @param mixed $origin
+     * @param string $origin
      *
-     * @return $this
+     * @return AuditEvent
      */
-    public function setOrigin($origin)
+    public function setOrigin($origin) : AuditEvent
     {
         if (!in_array($origin, ['http', 'cron', 'cli'])) {
             throw new \InvalidArgumentException('NotificationEndpoint origin has to be either "http", "cron" or "cli"');
@@ -387,19 +394,19 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getCategory()
+    public function getCategory() : int
     {
         return $this->category;
     }
 
     /**
-     * @param mixed $category
+     * @param int $category
      *
-     * @return $this
+     * @return AuditEvent
      */
-    public function setCategory($category)
+    public function setCategory($category) : AuditEvent
     {
         $this->category = $category;
 
@@ -407,12 +414,12 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getCategoryLabel()
+    public function getCategoryLabel() : string
     {
         $labels = [];
-        foreach ($this->categoryLabels as $category => $label) {
+        foreach (static::$categoryLabels as $category => $label) {
             if ($category & $this->category) $labels[] = $label;
         }
 
@@ -420,19 +427,27 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getEnv()
+    public static function getCategoryLabels() : array
+    {
+        return static::$categoryLabels;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEnv() : string
     {
         return $this->env;
     }
 
     /**
-     * @param mixed $env
+     * @param string $env
      *
-     * @return $this
+     * @return AuditEvent
      */
-    public function setEnv($env)
+    public function setEnv($env) : AuditEvent
     {
         $this->env = strtolower($env);
 
@@ -440,91 +455,52 @@ class AuditEvent extends AbstractEntity
     }
 
     /**
-     * @return ArrayCollection
+     * @return String
      */
-    public function getContext()
+    public function getEntityCollection(): String
     {
-        return $this->contexts;
+        return $this->entityCollection;
     }
 
     /**
-     * @param $context
-     *
-     * @return $this
+     * @return array
      */
-    public function setContext($context)
+    public function getEntityFields(): array
     {
-        if ($context instanceof Context) {
-            $context = [$context];
-        }
+        if ($this->getArrayCopy()) {
+            return array_keys($this->getArrayCopy());
+        } else {
+            $fields = [];
 
-        if ($context instanceof \ArrayObject || is_array($context) || $context instanceof \Iterator) {
-            foreach ($context as $key => $value) {
-                if (!$value instanceof Context) {
-                    if (is_int($key) && is_array($value) && array_key_exists('key', $value) && array_key_exists('value', $value)) {
-                        $contextData = ['key' => $value['key'], 'value' => $value['value']];
-                        if (isset($value['id'])) {
-                            $contextData['id'] = $value['id'];
-                        }
-                    } else {
-                        $contextData = ['key' => $key, 'value' => $value];
-                    }
-                    $value = new Context($contextData);
+            foreach(get_class_methods($this) as $method)
+            {
+                if (in_array(
+                    $method,
+                    [
+                        'getEntityFields',
+                        'getEntityIdentifier',
+                        'getEntityCollection',
+                        'getArrayCopy',
+                        'getFlags',
+                        'getIterator',
+                        'getIteratorClass',
+                        'getLevelLabel',
+                        'getLevelLabels',
+                        'getCommandLabel',
+                        'getCategoryLabel',
+                        'getCategoryLabels'
+                    ]
+                )) {
+                    continue;
                 }
 
-                $value->setAuditEvent($this);
-                $this->contexts->add($value);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hydrate($data)
-    {
-        if (!empty($data['context'])) {
-
-            if (is_string($data['context'])) {
-                $data['context'] = json_decode($data['context'], true);
-            }
-
-            foreach ((array)$data['context'] as $key => $value) {
-                if (is_int($key) && is_array($value) && array_key_exists('key', $value) && array_key_exists('value', $value)) {
-                    $contextData = ['key' => $value['key'], 'value' => $value['value']];
-                    if (isset($value['id'])) {
-                        $contextData['id'] = $value['id'];
-                    }
-                } else {
-                    $contextData = ['key' => $key, 'value' => $value];
+                if(strpos($method, 'get') === 0)
+                {
+                    $fields[] = Snake::case(substr($method, 3));
                 }
-
-                $context = new Context($contextData);
-
-                $data['context'][$key] = $context;
             }
+
+            return $fields;
         }
-
-        return parent::hydrate($data);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toArray($mapped = false)
-    {
-        $data = parent::toArray($mapped);
-
-        if (!empty($data['context'])) {
-            $context = [];
-            foreach ($data['context'] as $key => $value) {
-                $context[$key] = $value->toArray();
-            }
-            $data['context'] = $context;
-        }
-
-        return $data;
     }
 }
