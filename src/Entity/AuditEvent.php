@@ -152,7 +152,7 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
     /**
      * @return \DateTime
      */
-    public function getReportedAt() : \DateTime
+    public function getReportedAt()
     {
         return $this->reportedAt;
     }
@@ -373,7 +373,7 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
     /**
      * @return string
      */
-    public function getOrigin() : string
+    public function getOrigin()
     {
         return $this->origin;
     }
@@ -396,7 +396,7 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
     /**
      * @return int
      */
-    public function getCategory() : int
+    public function getCategory()
     {
         return $this->category;
     }
@@ -437,7 +437,7 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
     /**
      * @return string
      */
-    public function getEnv() : string
+    public function getEnv()
     {
         return $this->env;
     }
