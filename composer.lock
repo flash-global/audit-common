@@ -1155,16 +1155,16 @@
         },
         {
             "name": "objective-php/validation",
-            "version": "v1.0.3",
+            "version": "v1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/objective-php/validation.git",
-                "reference": "fc96f5ec430353aa50b6c6d7aa8c5d9a39a37247"
+                "reference": "b21129481a6f045f7af495af13ae7bd07b86759d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/objective-php/validation/zipball/fc96f5ec430353aa50b6c6d7aa8c5d9a39a37247",
-                "reference": "fc96f5ec430353aa50b6c6d7aa8c5d9a39a37247",
+                "url": "https://api.github.com/repos/objective-php/validation/zipball/b21129481a6f045f7af495af13ae7bd07b86759d",
+                "reference": "b21129481a6f045f7af495af13ae7bd07b86759d",
                 "shasum": ""
             },
             "require": {
@@ -1201,7 +1201,7 @@
                 "objective php",
                 "validation"
             ],
-            "time": "2017-08-10T15:01:27+00:00"
+            "time": "2017-09-28T07:11:56+00:00"
         },
         {
             "name": "phar-io/manifest",
