@@ -1,132 +1,62 @@
 <?php
 
-    namespace Fei\Service\Audit\Validator;
+namespace Fei\Service\Audit\Validator;
 
-    use Fei\Entity\EntityInterface;
-    use Fei\Entity\Validator\AbstractValidator;
-    use Fei\Entity\Validator\Exception;
-    use Fei\Service\Audit\Entity\AuditEvent;
+use Fei\Service\Audit\Entity\AuditEvent;
+use ObjectivePHP\Validation\HeapValidationChain;
+use ObjectivePHP\Validation\Rule\Callback;
+use ObjectivePHP\Validation\Rule\StringLength;
+
+/**
+ * Class AuditEventValidator
+ *
+ * @package Fei\Service\Audit\Validator
+ */
+class AuditEventValidator extends HeapValidationChain
+{
+    public function init()
+    {
+        $levelLabelsKeys    = array_keys(AuditEvent::getLevelLabels());
+        $categoryLabelsKeys = array_keys(AuditEvent::getCategoryLabels());
+
+        $this->registerRule('reported_at', new Callback(function($value) {
+            return $value instanceof \DateTime;
+        }));
+        $this->registerRule('level', new Callback(function($value) use ($levelLabelsKeys) {
+            return in_array($value, $levelLabelsKeys);
+        }));
+        /*$this->registerRule('flags', new Callback(function($value) {
+            return is_int($value);
+        }));*/
+        $this->registerRule('namespace', new StringLength(1, 255));
+        $this->registerRule('message', new StringLength(1, 255));
+        $this->registerRule('backtrace', new StringLength(1, 255));
+        $this->registerRule('user', new StringLength(1, 255));
+        $this->registerRule('server', new StringLength(1, 255));
+        $this->registerRule('command', new StringLength(1, 255));
+        $this->registerRule('origin', new Callback(function($value) {
+            return in_array($value, array('http', 'cli', 'cron'));
+        }));
+        $this->registerRule('category', new Callback(function($value) use ($categoryLabelsKeys) {
+            return in_array($value, $categoryLabelsKeys);
+        }));
+        $this->registerRule('env', new StringLength(1, 255));
+    }
 
     /**
-     * This file is part of the Objective PHP project
+     * @param mixed $entity
+     * @param null $context
      *
-     * More info about Objective PHP on www.objective-php.org
+     * @return bool
      *
-     * @license http://opensource.org/licenses/GPL-3.0 GNU GPL License 3.0
+     * @throws \Exception
      */
-    class AuditEventValidator extends AbstractValidator
+    public function validate($entity, $context = null) : bool
     {
-        /**
-         * @param EntityInterface $entity
-         *
-         * @return bool
-         * @throws Exception
-         */
-        public function validate(EntityInterface $entity)
-        {
-            if (!$entity instanceof AuditEvent)
-            {
-                throw new Exception('Entity to validate must be an instance of "AuditEvent"');
-            }
-
-            $this->validateMessage($entity->getMessage());
-            $this->validateLevel($entity->getLevel());
-            $this->validateNamespace($entity->getNamespace());
-            $this->validateOrigin($entity->getOrigin());
-            $this->validateReportedAt($entity->getReportedAt());
-
-            $errors = $this->getErrors();
-            return empty($errors);
+        if (!$entity instanceof AuditEvent) {
+            throw new \Exception('The Entity to validate must be an instance of \Fei\Service\Audit\Entity\AuditEvent');
         }
 
-        /**
-         * @param $level
-         *
-         * @return bool
-         */
-        public function validateLevel($level)
-        {
-            if (!in_array($level, array(AuditEvent::LVL_DEBUG, AuditEvent::LVL_INFO, AuditEvent::LVL_WARNING, AuditEvent::LVL_ERROR, AuditEvent::LVL_PANIC)))
-            {
-                $this->addError('level', 'Invalid level value');
-
-                return false;
-            }
-
-            return true;
-        }
-
-        /**
-         * @param $message
-         *
-         * @return bool
-         */
-        public function validateMessage($message)
-        {
-            if (empty($message))
-            {
-                $this->addError('message', 'Message cannot be empty');
-
-                return false;
-            }
-
-            return true;
-        }
-
-        /**
-         * @param $namespace
-         *
-         * @return bool
-         */
-        public function validateNamespace($namespace)
-        {
-            if (empty($namespace))
-            {
-                $this->addError('namespace', 'Namespace cannot be empty');
-
-                return false;
-            }
-
-            return true;
-        }
-
-        /**
-         * @param $origin
-         *
-         * @return bool
-         */
-        public function validateOrigin($origin)
-        {
-            if (empty($origin))
-            {
-                $this->addError('origin', 'Origin cannot be empty');
-                return false;
-            }
-
-            if(!in_array($origin, array('http', 'cli', 'cron')))
-            {
-                $this->addError('origin', 'Origin must be either "http", "cli" or "cron"');
-                return false;
-            }
-
-            return true;
-        }
-
-        /**
-         * @param $reportedAt
-         *
-         * @return bool
-         */
-        private function validateReportedAt($reportedAt)
-        {
-            if(empty($reportedAt))
-            {
-                $this->addError('reported_at', 'Report date and time cannot be empty');
-
-                return false;
-            }
-
-            return true;
-        }
-
+        return parent::validate($entity, $context);
     }
+}
