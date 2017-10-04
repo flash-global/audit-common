@@ -10,14 +10,6 @@
         
         public function transform(AuditEvent $auditEvent)
         {
-            
-            $contextItems = array();
-            
-            foreach ($auditEvent->getContext() as $contextItem)
-            {
-                $contextItems[$contextItem->getKey()] = $contextItem->getValue();
-            }
-            
             return array(
                 'id'          => (int) $auditEvent->getId(),
                 'reported_at' => $auditEvent->getReportedAt()->format(\DateTime::ISO8601),
@@ -32,7 +24,7 @@
                 'origin'      => $auditEvent->getOrigin(),
                 'category'    => $auditEvent->getCategory(),
                 'env'         => $auditEvent->getEnv(),
-                'context'     => $contextItems,
+                'context'     => $auditEvent->getContext(),
             );
         }
     }
