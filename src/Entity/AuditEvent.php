@@ -119,15 +119,13 @@ class AuditEvent extends AbstractEntity
     /**
      * @OneToMany(targetEntity="Context", mappedBy="auditEvent", cascade={"all"})
      */
-    protected $contexts;
+    protected $context = [];
 
     /**
      * Notification constructor.
      */
     public function __construct($data = null)
     {
-        $this->contexts = new ArrayCollection();
-
         parent::__construct($data);
     }
 
@@ -439,92 +437,45 @@ class AuditEvent extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return ArrayCollection
-     */
-    public function getContext()
+    public function setContext($context, $value = null)
     {
-        return $this->contexts;
-    }
-
-    /**
-     * @param $context
-     *
-     * @return $this
-     */
-    public function setContext($context)
-    {
-        if ($context instanceof Context) {
-            $context = [$context];
-        }
-
-        if ($context instanceof \ArrayObject || is_array($context) || $context instanceof \Iterator) {
-            foreach ($context as $key => $value) {
-                if (!$value instanceof Context) {
-                    if (is_int($key) && is_array($value) && array_key_exists('key', $value) && array_key_exists('value', $value)) {
-                        $contextData = ['key' => $value['key'], 'value' => $value['value']];
-                        if (isset($value['id'])) {
-                            $contextData['id'] = $value['id'];
-                        }
-                    } else {
-                        $contextData = ['key' => $key, 'value' => $value];
-                    }
-                    $value = new Context($contextData);
+        if(is_null($value) && is_array($context))
+        {
+            foreach($context as $key => $value)
+            {
+                if (is_int($key)) {
+                    throw new \Exception(sprintf('Context key must be a string, not an integer (key: "%s").', $key));
                 }
 
-                $value->setAuditEvent($this);
-                $this->contexts->add($value);
+                if($value && !is_scalar($value))
+                {
+                    throw new \Exception(sprintf('Context value must be scalar (key: "%s").', $key));
+                }
+
+                $this->context[$key] = $value;
             }
+        }
+        else {
+            $key = $context;
+            if (is_int($key)) {
+                throw new \Exception(sprintf('Context key must be a string, not an integer (key: "%s").', $key));
+            }
+
+            if ($value && !is_scalar($value)) {
+                throw new \Exception(sprintf('Context value must be scalar (key: "%s").', $key));
+            }
+
+            $this->context[$key] = $value;
         }
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * @return mixed
      */
-    public function hydrate($data)
+    public function getContext($context = null, $default = null)
     {
-        if (!empty($data['context'])) {
-
-            if (is_string($data['context'])) {
-                $data['context'] = json_decode($data['context'], true);
-            }
-
-            foreach ((array)$data['context'] as $key => $value) {
-                if (is_int($key) && is_array($value) && array_key_exists('key', $value) && array_key_exists('value', $value)) {
-                    $contextData = ['key' => $value['key'], 'value' => $value['value']];
-                    if (isset($value['id'])) {
-                        $contextData['id'] = $value['id'];
-                    }
-                } else {
-                    $contextData = ['key' => $key, 'value' => $value];
-                }
-
-                $context = new Context($contextData);
-
-                $data['context'][$key] = $context;
-            }
-        }
-
-        return parent::hydrate($data);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toArray($mapped = false)
-    {
-        $data = parent::toArray($mapped);
-
-        if (!empty($data['context'])) {
-            $context = [];
-            foreach ($data['context'] as $key => $value) {
-                $context[$key] = $value->toArray();
-            }
-            $data['context'] = $context;
-        }
-
-        return $data;
+        return $context ? $this->context[$context] ?? $default : $this->context;
     }
 }

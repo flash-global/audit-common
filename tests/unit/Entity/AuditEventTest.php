@@ -3,7 +3,6 @@
 namespace Tests\Fei\Service\Audit\Entity;
 
 use Codeception\Test\Unit;
-use Fei\Service\Audit\Entity\Context;
 use Fei\Service\Audit\Entity\AuditEvent;
 
 class AuditEventTest extends Unit
@@ -14,20 +13,21 @@ class AuditEventTest extends Unit
             'message' => 'test message',
             'namespace' => '/test',
             'origin' => 'cli',
-            'context' => array(
-                array('key' => 'test', 'value' => 'test value'),
-                array('key' => 'test2', 'value' => 'test value2')
-            )
+            'context' => [
+                'test' => 'test value',
+                'test2' => 'test value2'
+            ]
         );
 
         $auditEvent = new AuditEvent($auditEventData);
 
         $this->assertCount(2, $auditEvent->getContext());
 
-        $context = $auditEvent->getContext()->first();
-        $this->assertInstanceOf(Context::class, $context);
-        $this->assertEquals('test', $context->getKey());
-        $this->assertEquals('test value', $context->getValue());
+        $context = $auditEvent->getContext();
+
+        $keys    = array_keys($context);
+        $this->assertEquals('test', reset($keys));
+        $this->assertEquals('test value', reset($context));
     }
 
     public function testEmptySerialization()
@@ -61,8 +61,8 @@ class AuditEventTest extends Unit
             ->setCategory(AuditEvent::AUDIT)
             ->setEnv('test')
             ->setContext([
-                new Context(['id' => 1, 'key' => 'a key', 'value' => 'a value']),
-                new Context(['id' => 2, 'key' => 'a another key', 'value' => 'a another value'])
+                'a key' => 'a value',
+                'a another key' => 'a another value'
             ]);
 
         $serialized = json_encode($auditEvent->toArray());
