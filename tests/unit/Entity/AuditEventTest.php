@@ -106,6 +106,8 @@ class AuditEventTest extends Unit
 
     public function testTranformer()
     {
+        $date = new \DateTime();
+
         $auditEventData = array(
             'id' => 25,
             'level' => 2,
@@ -119,7 +121,7 @@ class AuditEventTest extends Unit
             'env' => 'n/c',
             'namespace' => '/test',
             'origin' => 'cli',
-            'reported_at' => '2016-07-18',
+            'reported_at' => $date,
             'context' => array(
                 array('key' => 'test', 'value' => 'test value'),
                 array('key' => 'test2', 'value' => 'test value2')
@@ -129,7 +131,7 @@ class AuditEventTest extends Unit
         $auditEvent  = new AuditEvent($auditEventData);
 
         $expected = $auditEventData;
-        $expected['reported_at'] = '2016-07-18T00:00:00+0000';
+        $expected['reported_at'] = $date->format(\DateTime::ISO8601);
         $expected['context'] = [
             'test' => 'test value',
             'test2' => 'test value2'
