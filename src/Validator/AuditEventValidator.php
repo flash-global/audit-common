@@ -117,7 +117,7 @@
          *
          * @return bool
          */
-        private function validateReportedAt($reportedAt)
+        public function validateReportedAt($reportedAt)
         {
             if(empty($reportedAt))
             {
