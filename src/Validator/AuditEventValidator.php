@@ -25,15 +25,23 @@ class AuditEventValidator extends HeapValidationChain
         $this->registerRule('level', new Callback(function($value) use ($levelLabelsKeys) {
             return in_array($value, $levelLabelsKeys);
         }));
-        /*$this->registerRule('flags', new Callback(function($value) {
-            return is_int($value);
-        }));*/
+
         $this->registerRule('namespace', new StringLength(1, 255));
         $this->registerRule('message', new StringLength(1, 255));
-        $this->registerRule('backtrace', new StringLength(1, 255));
-        $this->registerRule('user', new StringLength(1, 255));
-        $this->registerRule('server', new StringLength(1, 255));
-        $this->registerRule('command', new StringLength(1, 255));
+
+        $this->registerRule('backtrace', new Callback(function($value) {
+            return is_null($value) || (new StringLength(0, 255))->validate($value);
+        }));
+        $this->registerRule('user', new Callback(function($value) {
+            return is_null($value) || (new StringLength(0, 255))->validate($value);
+        }));
+        $this->registerRule('server', new Callback(function($value) {
+            return is_null($value) || (new StringLength(0, 255))->validate($value);
+        }));
+        $this->registerRule('command', new Callback(function($value) {
+            return is_null($value) || (new StringLength(0, 255))->validate($value);
+        }));
+
         $this->registerRule('origin', new Callback(function($value) {
             return in_array($value, array('http', 'cli', 'cron'));
         }));
