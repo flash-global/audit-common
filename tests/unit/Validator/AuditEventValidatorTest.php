@@ -62,7 +62,7 @@ class AuditEventValidatorTest extends TestCase
                 'test-user', 'test-server', 'http://bob.net/bob', 'http', AuditEvent::AUDIT,
                 'test-env', 'test', 'boom'
             ]],
-            [false, [
+            [true, [
                 '2017-04-15', AuditEvent::LVL_WARNING, 2, '/test-namespace', 'test-message', '{}',
                 '', 'test-server', 'http://bob.net/bob', 'http', AuditEvent::AUDIT,
                 'test-env', 'test', 'boom'
@@ -72,9 +72,14 @@ class AuditEventValidatorTest extends TestCase
                 'test-user', 'test-server', 'http://bob.net/bob', 'http', AuditEvent::AUDIT,
                 'test-env', 'test', 'boom'
             ]],
-            [false, [
+            [true, [
                 '2017-04-15', AuditEvent::LVL_WARNING, 2, '/test-namespace', 'test-message', '',
-                'test-user', 'test-server', 'http://bob.net/bob', 'http', AuditEvent::AUDIT,
+                '', '', 'http://bob.net/bob', 'http', AuditEvent::AUDIT,
+                'test-env', 'test', 'boom'
+            ]],
+            [true, [
+                '2017-04-15', AuditEvent::LVL_WARNING, 2, '/test-namespace', 'test-message', null,
+                null, null, 'http://bob.net/bob', 'http', AuditEvent::AUDIT,
                 'test-env', 'test', 'boom'
             ]],
         ];
