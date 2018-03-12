@@ -28,6 +28,12 @@ class ContextConverterTest extends TestCase
         return [
             [[], []],
             [
+                ['key' => 'key1', 'value' => 'value1'], ['key1' => 'value1']
+            ],
+            [
+                ['key1' => 'value1'], ['key1' => 'value1']
+            ],
+            [
                 [['key' => 'key1', 'value' => 'value1']], ['key1' => 'value1']
             ],
             [
@@ -42,7 +48,7 @@ class ContextConverterTest extends TestCase
                     ['key' => 'key1', 'value' => 'value1'],
                     ['key2' => 'value2']
                 ],
-                ['key1' => 'value1']
+                ['key1' => 'value1', 'key2' => 'value2']
             ],
             [
                 [
