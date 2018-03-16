@@ -19,33 +19,33 @@ class AuditEventValidator extends HeapValidationChain
         $levelLabelsKeys    = array_keys(AuditEvent::getLevelLabels());
         $categoryLabelsKeys = array_keys(AuditEvent::getCategoryLabels());
 
-        $this->registerRule('reported_at', new Callback(function($value) {
+        $this->registerRule('reported_at', new Callback(function ($value) {
             return $value instanceof \DateTime;
         }));
-        $this->registerRule('level', new Callback(function($value) use ($levelLabelsKeys) {
+        $this->registerRule('level', new Callback(function ($value) use ($levelLabelsKeys) {
             return in_array($value, $levelLabelsKeys);
         }));
 
         $this->registerRule('namespace', new StringLength(1, 255));
         $this->registerRule('message', new StringLength(1, 255));
 
-        $this->registerRule('backtrace', new Callback(function($value) {
+        $this->registerRule('backtrace', new Callback(function ($value) {
             return is_null($value) || (new StringLength(0, 255))->validate($value);
         }));
-        $this->registerRule('user', new Callback(function($value) {
+        $this->registerRule('user', new Callback(function ($value) {
             return is_null($value) || (new StringLength(0, 255))->validate($value);
         }));
-        $this->registerRule('server', new Callback(function($value) {
+        $this->registerRule('server', new Callback(function ($value) {
             return is_null($value) || (new StringLength(0, 255))->validate($value);
         }));
-        $this->registerRule('command', new Callback(function($value) {
+        $this->registerRule('command', new Callback(function ($value) {
             return is_null($value) || (new StringLength(0, 255))->validate($value);
         }));
 
-        $this->registerRule('origin', new Callback(function($value) {
+        $this->registerRule('origin', new Callback(function ($value) {
             return in_array($value, array('http', 'cli', 'cron'));
         }));
-        $this->registerRule('category', new Callback(function($value) use ($categoryLabelsKeys) {
+        $this->registerRule('category', new Callback(function ($value) use ($categoryLabelsKeys) {
             return in_array($value, $categoryLabelsKeys);
         }));
         $this->registerRule('env', new StringLength(1, 255));

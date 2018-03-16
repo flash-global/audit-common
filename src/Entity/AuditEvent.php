@@ -200,7 +200,9 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
     {
         $labels = [];
         foreach (static::$levelLabels as $level => $label) {
-            if ($level & $this->level) $labels[] = $label;
+            if ($level & $this->level) {
+                $labels[] = $label;
+            }
         }
 
         return implode(', ', $labels);
@@ -420,7 +422,9 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
     {
         $labels = [];
         foreach (static::$categoryLabels as $category => $label) {
-            if ($category & $this->category) $labels[] = $label;
+            if ($category & $this->category) {
+                $labels[] = $label;
+            }
         }
 
         return implode(', ', $labels);
@@ -472,8 +476,7 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
         } else {
             $fields = [];
 
-            foreach(get_class_methods($this) as $method)
-            {
+            foreach (get_class_methods($this) as $method) {
                 if (in_array(
                     $method,
                     [
@@ -494,8 +497,7 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
                     continue;
                 }
 
-                if(strpos($method, 'get') === 0)
-                {
+                if (strpos($method, 'get') === 0) {
                     $fields[] = Snake::case(substr($method, 3));
                 }
             }
