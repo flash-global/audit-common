@@ -13,7 +13,6 @@ class AuditEventTest extends TestCase
         $this->testOneAccessors('id', 1);
         $this->testOneAccessors('reportedAt', new \DateTime('2017-04-15'));
         $this->testOneAccessors('level', AuditEvent::LVL_WARNING);
-        //$this->testOneAccessors('flags', 2);
         $this->testOneAccessors('namespace', '/test-namespace');
         $this->testOneAccessors('message', 'test-message');
         $this->testOneAccessors('backTrace', '{}');
@@ -26,15 +25,6 @@ class AuditEventTest extends TestCase
         $this->testOneAccessors('entityCollection', 'audit_events');
     }
 
-    public function testAccessorFail()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('NotificationEndpoint origin has to be either "http", "cron" or "cli"');
-
-        $auditEventTest = new AuditEvent();
-        $auditEventTest->setOrigin('https');
-    }
-
     public function testOthers()
     {
         $auditEventTest = new AuditEvent();
@@ -44,7 +34,7 @@ class AuditEventTest extends TestCase
 
         $this->assertEquals('Warning', $auditEventTest->getLevelLabel());
         $this->assertEquals('Audit', $auditEventTest->getCategoryLabel());
-        $this->assertEquals('url', $auditEventTest->getCommandLabel());
+        $this->assertEquals('Origin', $auditEventTest->getCommandLabel());
     }
 
     protected function testOneAccessors($name, $expected)
