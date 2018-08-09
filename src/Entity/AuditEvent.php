@@ -369,7 +369,7 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
      */
     public function getCommandLabel() : string
     {
-        return $this->origin == 'http' ? 'url' : 'command line';
+        return 'Origin';
     }
 
     /**
@@ -387,9 +387,6 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
      */
     public function setOrigin($origin) : AuditEvent
     {
-        if (!in_array($origin, ['http', 'cron', 'cli'])) {
-            throw new \InvalidArgumentException('NotificationEndpoint origin has to be either "http", "cron" or "cli"');
-        }
         $this->origin = $origin;
 
         return $this;
