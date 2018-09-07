@@ -18,13 +18,12 @@ class AuditEventTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform(AuditEvent $auditEvent)
+    public function transform(AuditEvent $auditEvent): array
     {
         return array(
-            'id'          => (int) $auditEvent->getId(),
+            'id'          => $auditEvent->getId(),
             'reported_at' => $auditEvent->getReportedAt()->format(\DateTime::ISO8601),
             'level'       => (int) $auditEvent->getLevel(),
-            //'flags'       => (int) $auditEvent->getFlags(),
             'namespace'   => $auditEvent->getNamespace(),
             'message'     => $auditEvent->getMessage(),
             'backtrace'   => $auditEvent->getBackTrace(),

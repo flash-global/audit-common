@@ -20,10 +20,9 @@ class AuditEventTransformerV1 extends TransformerAbstract
     public function transform(AuditEvent $auditEvent)
     {
         return array(
-            'id'          => (int) $auditEvent->getId(),
+            'id'          => $auditEvent->getId(),
             'reported_at' => $auditEvent->getReportedAt()->format(\DateTime::ISO8601),
             'level'       => (int) $auditEvent->getLevel(),
-            //'flags'       => (int) $auditEvent->getFlags(),
             'namespace'   => $auditEvent->getNamespace(),
             'message'     => $auditEvent->getMessage(),
             'backtrace'   => $auditEvent->getBackTrace(),
