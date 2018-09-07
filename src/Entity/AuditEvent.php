@@ -49,51 +49,30 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
         self::TRACKING    => 'Tracking'
     ];
 
-    protected $entityCollection = "audit_events";
+    protected $entityCollection = 'audit_events';
 
-    /**
-     * @var int
-     */
+    /** @var string */
     protected $id;
 
-    /**
-     * @var \DateTime
-     */
+    /** @var \DateTime */
     protected $reportedAt;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $level = 2;
 
-    /**
-     * @var int
-     */
-    //protected $flags = 0;
-
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $namespace = '/';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $message;
 
-    /**
-     * @var json
-     */
+    /** @var string */
     protected $backTrace;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $user;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $server;
 
     /**
@@ -103,14 +82,10 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
      */
     protected $command;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $origin;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $category;
 
     /**
@@ -120,17 +95,8 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
      */
     protected $env = 'n/c';
 
-
     /**
-     * Audit constructor.
-     */
-    public function __construct($data = null)
-    {
-        //parent::__construct($data);
-    }
-
-    /**
-     * @return int
+     * @return string
      */
     public function getId()
     {
@@ -138,11 +104,11 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
     }
 
     /**
-     * @param int $id
+     * @param string $id
      *
      * @return AuditEvent
      */
-    public function setId(int $id) : AuditEvent
+    public function setId(string $id): AuditEvent
     {
         $this->id = $id;
 
@@ -164,7 +130,7 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
      */
     public function setReportedAt($reportedAt) : AuditEvent
     {
-        if (is_string($reportedAt)) {
+        if (\is_string($reportedAt)) {
             $reportedAt = new \DateTime($reportedAt);
         }
 
@@ -245,24 +211,6 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
     }
 
     /**
-     * @return mixed
-     */
-    /*public function getFlags()
-    {
-        return $this->flags;
-    }*/
-
-    /**
-     * @param int $flags
-     * @return $this
-     */
-    /*public function setFlags($flags)
-    {
-        $this->flags = $flags;
-        return $this;
-    }*/
-
-    /**
      * @return string
      */
     public function getMessage()
@@ -283,13 +231,11 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
     }
 
     /**
-     * @return json
+     * @return string
      */
     public function getBackTrace()
     {
-        $backTrace = $this->backTrace;
-
-        return $backTrace;
+        return $this->backTrace;
     }
 
     /**
@@ -297,7 +243,7 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
      *
      * @return AuditEvent
      */
-    public function setBackTrace($backTrace) : AuditEvent
+    public function setBackTrace($backTrace): AuditEvent
     {
         $this->backTrace = $backTrace;
 
@@ -474,7 +420,7 @@ class AuditEvent extends Entity implements ContextAwareEntityInterface
             $fields = [];
 
             foreach (get_class_methods($this) as $method) {
-                if (in_array(
+                if (\in_array(
                     $method,
                     [
                         'getEntityFields',

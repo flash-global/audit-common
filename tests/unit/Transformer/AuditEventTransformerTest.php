@@ -16,10 +16,9 @@ class AuditEventTransformerTest extends TestCase
 
         $date = new \DateTime();
 
-        $audit->setId(25);
+        $audit->setId('2938c3a3-36fc-4805-865d-f05df39ca435');
         $audit->setReportedAt($date);
         $audit->setLevel(AuditEvent::LVL_WARNING);
-        //$audit->setFlags(2);
         $audit->setNamespace('/test-namespace');
         $audit->setMessage('test-message');
         $audit->setBackTrace('{}');
@@ -33,10 +32,9 @@ class AuditEventTransformerTest extends TestCase
 
         $this->assertEquals(
             [
-                'id'          => 25,
+                'id'          => '2938c3a3-36fc-4805-865d-f05df39ca435',
                 'reported_at' => $date->format(\DateTime::ISO8601),
                 'level'       => AuditEvent::LVL_WARNING,
-                //'flags'       => 2,
                 'namespace'   => '/test-namespace',
                 'message'     => 'test-message',
                 'backtrace'   => '{}',
@@ -61,10 +59,9 @@ class AuditEventTransformerTest extends TestCase
 
         $date = new \DateTime();
 
-        $audit->setId(25);
+        $audit->setId('2938c3a3-36fc-4805-865d-f05df39ca435');
         $audit->setReportedAt($date);
         $audit->setLevel(AuditEvent::LVL_WARNING);
-        //$audit->setFlags(2);
         $audit->setNamespace('/test-namespace');
         $audit->setMessage('test-message');
         $audit->setBackTrace('{}');
@@ -78,10 +75,9 @@ class AuditEventTransformerTest extends TestCase
 
         $this->assertEquals(
             [
-                'id'          => 25,
+                'id'          => '2938c3a3-36fc-4805-865d-f05df39ca435',
                 'reported_at' => $date->format(\DateTime::ISO8601),
                 'level'       => AuditEvent::LVL_WARNING,
-                //'flags'       => 2,
                 'namespace'   => '/test-namespace',
                 'message'     => 'test-message',
                 'backtrace'   => '{}',
