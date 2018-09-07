@@ -23,7 +23,7 @@ class AuditEventValidator extends HeapValidationChain
             return $value instanceof \DateTime;
         }));
         $this->registerRule('level', new Callback(function ($value) use ($levelLabelsKeys) {
-            return in_array($value, $levelLabelsKeys);
+            return \in_array($value, $levelLabelsKeys);
         }));
 
         $this->registerRule('namespace', new StringLength(1, 255));
@@ -53,16 +53,17 @@ class AuditEventValidator extends HeapValidationChain
 
     /**
      * @param mixed $entity
-     * @param null $context
+     * @param null  $context
      *
      * @return bool
      *
-     * @throws \Exception
+     * @throws \LogicException
+     * @throws \ObjectivePHP\Validation\Exception\ValidationException
      */
     public function validate($entity, $context = null) : bool
     {
         if (!$entity instanceof AuditEvent) {
-            throw new \Exception('The Entity to validate must be an instance of \Fei\Service\Audit\Entity\AuditEvent');
+            throw new \LogicException('The Entity to validate must be an instance of \Fei\Service\Audit\Entity\AuditEvent');
         }
 
         return parent::validate($entity, $context);
