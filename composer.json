@@ -29,7 +29,7 @@
       "type": "vcs",
       "url": "git@github.com:flash-global/entities.git"
     }
-  ]
+  ],
   "autoload": {
     "psr-4": {
       "Fei\\Service\\Audit\\": "src"
